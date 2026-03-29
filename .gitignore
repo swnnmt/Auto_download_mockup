@@ -1,1 +1,4 @@
 ChromeProfilebot/
+Image_src/
+chromedriver.exe
+.env
