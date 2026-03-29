@@ -108,7 +108,7 @@ Return ONLY valid JSON (no markdown):
 Optimization Rules:
 1. Item_Name: Max 200 chars. Structure: [Theme/Graphic Description] + T-Shirt + [Key Material/Style].
 2. bullets: Exactly 5 points. Start each with a CAPITALIZED FEATURE (e.g., PREMIUM COMFORT: ...). Focus on benefits.
-3. description: Detailed and persuasive. Use <p> and <br> tags for formatting.
+3. description: Detailed and persuasive. SEO optimized search terms.
 4. keywords: 10-15 SEO optimized search terms.
 5. subject_character: Identify the main animal, character, or theme (e.g., "Cat", "Nurse", "Skull", "Panda").
 """
