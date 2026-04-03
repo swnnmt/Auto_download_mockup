@@ -1,39 +1,33 @@
-# main đã tạo và push khung cùng các file buil 
-
-# tạo nhánh riêng
-# git branch dev (tạo nhánh cho dev)
-# git branch test (tạo nhánh cho tạo nhánh để test)
-# git branch backup (tạo nhánh cho tạo nhánh làm backup)
+# main đã tạo và push khung cùng các file build
+# git branch dev  # tạo nhánh dev 
 
 # start
-# git checkout main
-# git pull origin main       # lấy code mới nhất từ remote main
-# git checkout dev           # về lại nhánh dev
-# git merge main             # merge code mới từ main vào nhánh dev
-           
-# Code và thêm chức năng xong
+# git checkout main     #chuyển sang nhánh main
+# git pull origin main  # lấy tất cả code ở main hiện tại
+# git checkout dev      # sang nhánh dev
+# git merge main        # lấy code mới nhất ở main
+
+# tạo nhánh feature
+# git checkout -b feature/ten-tinh-nang  tạo nhánh cho chức năng
+
+# Code xong
 # git add .
 # git commit -m "Thêm tính năng A"
-# git push origin dev ( Luôn là code mới nhất từ main + chức năng đã thêm vào)
+# git push origin feature/ten-tinh-nang
 
-# Test
-# git checkout dev    # chuyển sang nhanh dev
-# git pull origin dev # lấy code mới nhất từ nhánh dev
-# git checkout test   # chuyển về nhanh test
-# git merge dev       # merge code hiện tại của nhánh dev với code đang có ở nhánh test
-# test chức năng, hoặc viết unit test => confirm code hiện tại của dev oke
-# nếu có lỗi thì báo lại dev 
-# git add .
-# git commit -m " confirm + chức năng "
-# git push origin test (code ở test luôn )
+# tạo Pull Request (merge vào dev) # bấm pull request trên git
 
+# Test ( ko cần tạo nhánh tránh rối)
+# git checkout dev
+# git pull origin dev
+# Test và báo lỗi trên Pull Request
+
+# Dev fix bug → push lại branch feature
+
+# Done → merge Pull Request vào dev
+
+# Release
 # git checkout main
-# git pull origin main       # đảm bảo main local mới nhất
-# git merge test             # merge code hoàn thiện sau khi test vào main
-# git push origin main       # đẩy code lên remote main
-
-# lưu backup ( sau khi test hoàn thiện và push lên main)
-# git checkout main
-# git pull origin main       # lấy code mới nhất từ remote main
-# git checkout backup           # về lại nhánh backup
-# git merge main             # merge code mới từ main vào nhánh backup ( chỉ merge khi main đã hoàn chỉnh)
+# git pull origin main
+# git merge dev
+# git push origin main
