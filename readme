@@ -14,6 +14,6 @@
 # git push origin swn
 
 # git checkout main
-# git pull origin main       # đảm bảo main local mới nhất
-# git merge swn              # merge nhánh của bạn vào main
-# git push origin main       # đẩy code lên remote main
+ # git pull origin main       # đảm bảo main local mới nhất
+ # git merge swn              # merge nhánh của bạn vào main
+ # git push origin main       # đẩy code lên remote main
