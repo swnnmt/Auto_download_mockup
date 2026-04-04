@@ -2,8 +2,7 @@ import os
 import re
 import time
 from pathlib import Path
-from urllib.parse import urlparse, parse_qs, urlencode, urlunparse, parse_qsl
-
+from urllib.parse import urlparse, parse_qs, urlencode, urlunparse, parse_qsl,quote
 import traceback
 import requests
 from openpyxl import load_workbook, Workbook
@@ -449,7 +448,8 @@ def append_or_replace_custom_param(url: str, custom_param: str) -> str:
     parsed = urlparse(url)
     params = dict(parse_qsl(parsed.query, keep_blank_values=True))
     params[key] = value
-    new_query = urlencode(params)
+    
+    new_query = urlencode(params, quote_via=quote)
     return urlunparse((parsed.scheme, parsed.netloc, parsed.path, parsed.params, new_query, parsed.fragment))
 
 

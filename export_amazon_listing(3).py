@@ -78,8 +78,10 @@ def export_listing_for_folder(folder_path, ai_data):
     # Ảnh đại diện cho Parent (Trắng 1)
     if images_by_color["w"]:
         ws.cell(row=current_row, column=19).value = images_by_color["w"][0]
-
+        for i, url in enumerate(images_by_color["w"][1:9]): # Amazon cho phép tối đa 8 ảnh phụ
+                    ws.cell(row=current_row, column=20 + i).value = url    # Other Images
     current_row += 1
+
 
     # --- TẠO CÁC DÒNG CHILD (Bắt đầu từ hàng 8) ---
     for color_code, color_name in COLORS.items():
