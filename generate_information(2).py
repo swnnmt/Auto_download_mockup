@@ -106,11 +106,38 @@ Return ONLY valid JSON (no markdown):
 }
 
 Optimization Rules:
-1. Item_Name: Max 200 chars. Structure: [Theme/Graphic Description] + T-Shirt + [Key Material/Style].
-2. bullets: Exactly 5 points. Start each with a CAPITALIZED FEATURE (e.g., PREMIUM COMFORT: ...). Focus on benefits.
-3. description: Detailed and persuasive. SEO optimized search terms.
-4. keywords: 10-15 SEO optimized search terms.
-5. subject_character: Identify the main animal, character, or theme (e.g., "Cat", "Nurse", "Skull", "Panda").
+
+1. Item_Name:
+- Length: MIN 190 characters, MAX 200 characters.
+- MUST follow EXACT structure below (do NOT remove any part):
+
+[Adjective/Theme] [Character/Subject] [Context/Activity] T-Shirt – “[Exact Quote on Shirt]”, Heavy Cotton, [Niche/Use Case], [Occasion/Target Audience], Casual Everyday Wear, Graphic Tee, Comfortable Fit, Trendy Statement Shirt
+
+- The quote MUST be included exactly inside quotation marks.
+- The name MUST be long, natural, readable, and close to 200 characters.
+- Do NOT shorten or skip any segment in the structure.
+- Expand each segment slightly to reach the required length.
+
+2. bullets:
+- Exactly 5 bullet points.
+- Each bullet MUST start with a CAPITALIZED FEATURE (e.g., PREMIUM COMFORT:, PERFECT GIFT:, UNIQUE DESIGN:, LIGHTWEIGHT FABRIC:, VERSATILE STYLE:).
+- Focus on benefits, emotions, and use cases (gift, daily wear, humor impact).
+- Mention the quote theme where relevant.
+
+3. description:
+- Write a detailed, persuasive, and engaging product description.
+- Highlight the meaning, humor, or emotional value of the quote.
+- Include SEO keywords naturally (quote shirt, funny saying shirt, gift idea, etc.).
+- Avoid repetition, keep it readable and conversion-focused.
+
+4. keywords:
+- Provide 10–15 SEO-optimized search terms.
+- Include variations of quote shirt, saying shirt, funny quote t-shirt, gift keywords, niche audience keywords.
+- Comma-separated, no duplicates.
+
+5. subject_character:
+- Identify the main theme of the shirt.
+- For quote-based designs, use values like: "Quote", "Funny Quote", "Motivational Quote", "Sarcastic Quote", etc.
 """
 
     messages = [
