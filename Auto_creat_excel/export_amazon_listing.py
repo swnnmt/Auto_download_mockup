@@ -5,8 +5,8 @@ from openpyxl import load_workbook
 
 # ================= CONFIG =================
 BASE_DIR = Path(__file__).resolve().parent
-STATUS_FILE = BASE_DIR / "mockup_status.xlsx"
-TEMPLATE_FILE = BASE_DIR / "SHIRT_template.xlsm"
+STATUS_FILE = BASE_DIR.parent / "Auto_Gen_Information" / "mockup_status.xlsx"
+TEMPLATE_FILE = BASE_DIR.parent / "SHIRT_template.xlsm"
 
 # Amazon Listing Config
 BRAND_NAME = "Generic"
@@ -47,7 +47,7 @@ def export_listing_for_folder(folder_path, ai_data):
     wb = load_workbook(TEMPLATE_FILE, keep_vba=True)
     if 'Template' not in wb.sheetnames:
         print(f"  ❌ Lỗi: Không tìm thấy sheet 'Template' trong {TEMPLATE_FILE.name}")
-        return
+        return False
     ws = wb['Template']
 
     # Dữ liệu từ AI
@@ -134,6 +134,7 @@ def export_listing_for_folder(folder_path, ai_data):
     output_path = folder_path / f"{folder_name}_Amazon_Listing.xlsm"
     wb.save(output_path)
     print(f"  ✅ Đã xuất listing: {output_path.name}")
+    return True
 
 def main():
     if not STATUS_FILE.exists() or not TEMPLATE_FILE.exists():
@@ -143,17 +144,40 @@ def main():
     wb_status = load_workbook(STATUS_FILE)
     ws_status = wb_status.active
 
-    for row_idx in range(2, ws_status.max_row + 1):
-        folder_path_str = ws_status.cell(row=row_idx, column=1).value
-        json_str = ws_status.cell(row=row_idx, column=2).value
-        status = ws_status.cell(row=row_idx, column=4).value # Cột 4 là status chính
+    # Xác định vị trí các cột
+    headers = [cell.value for cell in ws_status[1]]
+    
+    # Nếu chưa có cột statusGeneralExcel thì thêm vào
+    if "statusGeneralExcel" not in headers:
+        ws_status.cell(row=1, column=len(headers) + 1).value = "statusGeneralExcel"
+        headers.append("statusGeneralExcel")
+        wb_status.save(STATUS_FILE)
 
+    col_idx_path = headers.index("bath_mockup") + 1 if "bath_mockup" in headers else 1
+    col_idx_json = headers.index("json") + 1 if "json" in headers else 2
+    col_idx_status = headers.index("status") + 1 if "status" in headers else 4
+    col_idx_status_gen = headers.index("statusGeneralExcel") + 1
+
+    for row_idx in range(2, ws_status.max_row + 1):
+        folder_path_str = ws_status.cell(row=row_idx, column=col_idx_path).value
+        json_str = ws_status.cell(row=row_idx, column=col_idx_json).value
+        status = ws_status.cell(row=row_idx, column=col_idx_status).value
+        status_gen_excel = ws_status.cell(row=row_idx, column=col_idx_status_gen).value
+
+        # Chỉ xử lý nếu status là 'done' và statusGeneralExcel không phải là 'done'
         if folder_path_str and json_str and status == "done":
+            if status_gen_excel == "done":
+                print(f"⏩ Bỏ qua: {Path(folder_path_str).name} (đã có file Excel)")
+                continue
+
             folder_path = Path(folder_path_str)
             print(f"📦 Đang tạo listing cho: {folder_path.name}")
             try:
                 ai_data = json.loads(json_str)
-                export_listing_for_folder(folder_path, ai_data)
+                if export_listing_for_folder(folder_path, ai_data):
+                    # Cập nhật trạng thái statusGeneralExcel thành done
+                    ws_status.cell(row=row_idx, column=col_idx_status_gen).value = "done"
+                    wb_status.save(STATUS_FILE)
             except Exception as e:
                 print(f"  ❌ Lỗi: {e}")
 

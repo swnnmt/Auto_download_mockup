@@ -16,8 +16,8 @@ from selenium.common.exceptions import TimeoutException
 
 BASE_DIR = Path(__file__).resolve().parent
 LINK_XLSX = BASE_DIR / "LinkMockup.xlsx"
-BATH_IMAGE_XLSX = BASE_DIR / "Bath_image.xlsx"
-IMAGE_SRC_DIR = BASE_DIR / "Image_src"
+BATH_IMAGE_XLSX = BASE_DIR / "Bath_Image.xlsx"
+IMAGE_SRC_DIR = BASE_DIR.parent / "Image_src"
 
 SHEET_NAME = "Bath_Image"
 SLEEP_AFTER_CROP = 20
@@ -25,7 +25,7 @@ PAGE_WAIT = 20
 MAX_LINKS = None
 HEADLESS = False
 
-USER_DATA_DIR = Path(os.environ.get("CHROME_USER_DATA_DIR", str(BASE_DIR / "ChromeProfileBot")))
+USER_DATA_DIR = Path(os.environ.get("CHROME_USER_DATA_DIR", str(BASE_DIR.parent / "ChromeProfileBot")))
 PROFILE_DIRECTORY = os.environ.get("CHROME_PROFILE_DIR", "")
 RUN_MODE = os.environ.get("RUN_MODE", "selected").strip().lower()
 VALID_IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp"}
@@ -63,7 +63,7 @@ def load_batch_sheet(xlsx_path: Path):
     required = ["Theme", "ImageName", "ImagePath", "Selected", "Status", "Note"]
     missing = [h for h in required if h not in headers]
     if missing:
-        raise RuntimeError(f"Bath_image.xlsx thiếu cột: {', '.join(missing)}")
+        raise RuntimeError(f"Bath_Image.xlsx thiếu cột: {', '.join(missing)}")
 
     return wb, ws, headers
 
@@ -656,34 +656,27 @@ def download_file(session: requests.Session, file_url: str, output_path: Path):
 
 
 def update_mockup_status(folder_path: Path):
-    status_file = BASE_DIR / "mockup_status.xlsx"
+    status_file = BASE_DIR.parent / "Auto_Gen_Information" / "mockup_status.xlsx"
     if not status_file.exists():
         wb = Workbook()
         ws = wb.active
         ws.title = "Mockup Status"
-        ws.append(["bath_mockup", "json", "statusUpload", "status"])
+        ws.append(["bath_mockup", "json", "statusUpload", "status", "statusGeneralExcel"])
         wb.save(status_file)
 
     wb = load_workbook(status_file)
     ws = wb.active
     
-    # Kiểm tra và cập nhật header nếu là phiên bản cũ (2 hoặc 3 cột)
-    if ws.max_column < 4:
-        # Nếu có 3 cột (bath_mockup, json, status)
-        if ws.max_column == 3:
-            for row in range(2, ws.max_row + 1):
-                old_status = ws.cell(row=row, column=3).value
-                ws.cell(row=row, column=4).value = old_status # status sang cột 4
-                ws.cell(row=row, column=3).value = "" # statusUpload trống ở cột 3
-        # Nếu có 2 cột (bath_mockup, status)
-        elif ws.max_column == 2:
-            for row in range(2, ws.max_row + 1):
-                old_status = ws.cell(row=row, column=2).value
-                ws.cell(row=row, column=4).value = old_status
-                ws.cell(row=row, column=2).value = ""
-                ws.cell(row=row, column=3).value = ""
-        
-        # Cập nhật lại header
+    # Kiểm tra và cập nhật header nếu là phiên bản cũ
+    headers = [cell.value for cell in ws[1]]
+    if "statusGeneralExcel" not in headers:
+        ws.cell(row=1, column=ws.max_column + 1).value = "statusGeneralExcel"
+        wb.save(status_file)
+        # Re-load headers after change
+        headers = [cell.value for cell in ws[1]]
+
+    if "status" not in headers:
+        # Code logic cũ để migration nếu cần, nhưng quan trọng là đảm bảo có đủ cột
         ws.cell(row=1, column=1).value = "bath_mockup"
         ws.cell(row=1, column=2).value = "json"
         ws.cell(row=1, column=3).value = "statusUpload"
